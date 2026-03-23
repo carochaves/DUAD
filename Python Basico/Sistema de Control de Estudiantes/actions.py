@@ -1,7 +1,4 @@
-students = []
-
-
-def get_student_info():
+def get_student_info(students):
 
     name = input("Ingrese su nombre: ")
     section = input("Ingrese su seccion: ")
@@ -42,7 +39,7 @@ def get_valid_grade(subject):
             print("Error: debe ingresar un numero.")
 
 
-def show_students_info():
+def show_students_info(students):
 
     if not students:
         print("No hay estudiantes registrados.")
@@ -67,7 +64,7 @@ def calculate_average(student):
     ) / 4
 
 
-def prom_each_student():
+def prom_each_student(students):
 
     if not students:
         print("No hay estudiantes registrados.")
@@ -80,7 +77,7 @@ def prom_each_student():
         print("Promedio:", average)
 
 
-def average_all_students():
+def average_all_students(students):
 
     if not students:
         print("No hay estudiantes registrados.")
@@ -96,13 +93,12 @@ def average_all_students():
     print("Promedio general de todos los estudiantes:", general_average)
 
 
-def top_3_students():
+def top_3_students(students):
 
     if not students:
         print("No hay estudiantes registrados.")
         return
 
-    # agregar promedio a cada estudiante
     for student in students:
         student["average"] = calculate_average(student)
 

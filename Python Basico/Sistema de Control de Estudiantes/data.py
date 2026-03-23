@@ -24,8 +24,6 @@ def export_to_csv(students):
     print("Datos exportados correctamente.")
 
 
-import csv
-
 def import_from_csv():
 
     try:

@@ -5,33 +5,43 @@ import data
 
 def main():
 
+    print("Antes de importar")
+
+    students = data.import_from_csv()
+
+    print("Despues de importar")
+
+    if students is None:
+        students = []
+    
     while True:
 
         menu.show_menu()
         option = menu.get_menu_option()
 
         if option == 1:
-            actions.get_student_info()
+            actions.get_student_info(students)
 
         elif option == 2:
-            actions.show_students_info()
+            actions.show_students_info(students)
 
         elif option == 3:
-            actions.prom_each_student()
+            actions.prom_each_student(students)
 
         elif option == 4:
-            actions.average_all_students()
+            actions.average_all_students(students)
 
         elif option == 5:
-            actions.top_3_students()
+            actions.top_3_students(students)
 
         elif option == 6:
-            data.export_to_csv(actions.students)
+            data.export_to_csv(students)
 
         elif option == 7:
             students_imported = data.import_from_csv()
+
             if students_imported is not None:
-                actions.students = students_imported
+                students = students_imported
 
         elif option == 8:
             print("Saliendo del programa...")
