@@ -5,14 +5,7 @@ import data
 
 def main():
 
-    print("Antes de importar")
-
-    students = data.import_from_csv()
-
-    print("Despues de importar")
-
-    if students is None:
-        students = []
+    students = []
     
     while True:
 
