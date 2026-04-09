@@ -2,10 +2,6 @@ import csv
 
 def export_to_csv(students):
 
-    if not students:
-        print("No hay datos para exportar.")
-        return
-
     with open("students.csv", "w", newline="") as file:
         writer = csv.writer(file)
 
