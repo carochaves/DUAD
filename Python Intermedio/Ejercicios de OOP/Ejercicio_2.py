@@ -14,10 +14,8 @@ class Bus:
     def add_passenger(self, person):
         if not isinstance(person, Person):
             raise TypeError("El pasajero debe ser una instancia de Person")
-
-    def add_passenger(self):
-        if self.passengers < self.max_passengers:
-            self.passengers += 1
+        if len(self.passengers) < self.max_passengers:
+            self.passengers.append(person)
             return True
 
         print("El bus está lleno.")
