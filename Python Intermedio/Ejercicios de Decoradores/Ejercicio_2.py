@@ -6,6 +6,10 @@ def validar_numeros(func):
 
             if not isinstance(parametro, (int, float)):
                 raise Exception("Todos los parámetros deben ser números")
+        
+        for param in kwargs.values():
+            if not isinstance(param, (int, float)):
+                raise Exception("Todos los parámetros deben ser números")
 
         return func(*args, **kwargs)
 

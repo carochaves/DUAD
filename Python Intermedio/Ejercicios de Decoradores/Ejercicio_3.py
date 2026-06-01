@@ -10,9 +10,15 @@ class User:
     def age(self):
 
         today = date.today()
+        age = today.year - self.date_of_birth.year
 
-        return today.year - self.date_of_birth.year
+        if (today.month, today.day) < (
+            self.date_of_birth.month,
+            self.date_of_birth.day
+        ):
+            age -= 1
 
+        return age    
 
 def validate_age(func):
 
