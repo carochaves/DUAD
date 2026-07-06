@@ -1,0 +1,15 @@
+1. Analice el algoritmo de bubble_sort usando la Big O Notation.
+Cuando usamos bubble_sort se debe ir intercambiando cada elemento cuando se realiza la comparacion 1 a 1, por lo que debe repetir el proceso varias veces hasta que los elementos
+esten ordenados.
+Mejor caso: O(n)
+Ocurre cuando el arreglo ya está ordenado y la implementación incluye una bandera (swapped) para detectar que no hubo intercambios durante la primera pasada. En este caso solo se recorre el arreglo una vez.
+
+Caso promedio: O(n²)
+Cuando los elementos están desordenados de forma aleatoria, Bubble Sort necesita realizar múltiples pasadas y comparaciones para ordenar todos los elementos.
+
+Peor caso: O(n²)
+Ocurre cuando el arreglo está completamente en el orden contrario al deseado. El algoritmo debe realizar el máximo número de comparaciones e intercambios para ordenar todos los elementos.
+
+Complejidad espacial: O(1), ya que no utiliza memoria adicional significativa.
+
+
