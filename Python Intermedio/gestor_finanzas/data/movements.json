@@ -1,0 +1,14 @@
+[
+    {
+        "title": "salario",
+        "amount": 500000.0,
+        "category": "salario",
+        "type": "income"
+    },
+    {
+        "title": "restaurante",
+        "amount": 10000.0,
+        "category": "salidas",
+        "type": "expense"
+    }
+]
