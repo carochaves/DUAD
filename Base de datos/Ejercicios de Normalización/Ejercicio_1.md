@@ -11,14 +11,18 @@
 | 003 | Claire | 555-123-4567 | 789 Oak St | 105 | Salad | $6 | 1 | No croutons | 12:00 PM |
 | 004 | Claire | 555-123-4567 | 464 Georgia St | 106 | Water | $1 | 1 | None | 5:00 PM |
 
-## 2. Observaciones 
+## 2. Observaciones
 
-La tabla contiene información sobre clientes, pedidos, productos
-y detalles de los pedidos.
+La dirección de entrega corresponde al pedido completo, por lo que
+Address debe almacenarse en Orders.
 
-El pedido 002 presenta dos direcciones diferentes. Para conservar los datos originales, se asume que cada producto de un pedido puede tener su propia dirección de entrega.
+La dirección del pedido 002 está pendiente de confirmar, porque
+en la tabla original aparecen dos direcciones distintas para
+el mismo pedido: 456 Elm St y 4th Avenue.
 
-Si el negocio solo permite una dirección por pedido, será necesario confirmar cuál dirección es correcta. En ese caso, Address deberá almacenarse en Orders.
+Se conservan los datos originales en la tabla inicial y en 1FN.
+A partir de 2FN se utiliza la anotación "Por confirmar" para
+ese pedido, sin elegir arbitrariamente una dirección.
 
 Los identificadores de clientes asignados son:
 
@@ -30,10 +34,14 @@ Los identificadores de clientes asignados son:
 
 ### Dependencias funcionales
 
-- Order ID determina Customer ID y Delivery Time.
+- Order ID determina Customer ID, Address y Delivery Time.
 - Customer ID determina Customer Name y Customer Phone.
 - Item ID determina Item Name y Price.
-- La combinación Order ID + Item ID determina Quantity, Special Request y Address.
+- La combinación Order ID + Item ID determina Quantity y Special Request.
+
+La dependencia Order ID → Address corresponde a la regla del negocio.
+Las dos direcciones del pedido 002 representan una inconsistencia
+en los datos originales que debe corregirse.
 
 ## 3. Primera forma normal (1FN)
 
@@ -66,7 +74,7 @@ Los precios se representan como números decimales. El símbolo monetario puede 
 
 Sin embargo, todavía existen dependencias parciales:
 
-- Los datos del cliente y la hora dependen únicamente de Order ID.
+- Los datos del cliente, la dirección y la hora dependen únicamente de Order ID.
 - El nombre y el precio del producto dependen únicamente de Item ID.
 
 ## 4. Segunda forma normal (2FN)
@@ -82,12 +90,12 @@ Se incorpora Customer ID para identificar a cada cliente.
 
 ### Tabla Orders_2NF
 
-| Order ID (PK) | Customer ID | Customer Name | Customer Phone | Delivery Time |
-|---|---|---|---|---|
-| 001 | C01 | Alice | 123-456-7890 | 6:00 PM |
-| 002 | C02 | Bob | 987-654-3210 | 7:30 PM |
-| 003 | C03 | Claire | 555-123-4567 | 12:00 PM |
-| 004 | C03 | Claire | 555-123-4567 | 5:00 PM |
+| Order ID (PK) | Customer ID | Customer Name | Customer Phone | Address | Delivery Time |
+|---|---|---|---|---|---|
+| 001 | C01 | Alice | 123-456-7890 | 123 Main St | 6:00 PM |
+| 002 | C02 | Bob | 987-654-3210 | Por confirmar | 7:30 PM |
+| 003 | C03 | Claire | 555-123-4567 | 789 Oak St | 12:00 PM |
+| 004 | C03 | Claire | 555-123-4567 | 464 Georgia St | 5:00 PM |
 
 ### Tabla Items_2NF
 
@@ -101,14 +109,14 @@ Se incorpora Customer ID para identificar a cada cliente.
 
 ### Tabla OrderDetails_2NF
 
-| Order ID (PK, FK) | Item ID (PK, FK) | Quantity | Special Request | Address |
-|---|---|---|---|---|
-| 001 | 101 | 2 | No onions | 123 Main St |
-| 001 | 102 | 1 | Extra ketchup | 123 Main St |
-| 002 | 103 | 1 | Extra cheese | 456 Elm St |
-| 002 | 102 | 2 | None | 4th Avenue |
-| 003 | 105 | 1 | No croutons | 789 Oak St |
-| 004 | 106 | 1 | None | 464 Georgia St |
+| Order ID (PK, FK) | Item ID (PK, FK) | Quantity | Special Request |
+|---|---|---|---|
+| 001 | 101 | 2 | No onions |
+| 001 | 102 | 1 | Extra ketchup |
+| 002 | 103 | 1 | Extra cheese |
+| 002 | 102 | 2 | None |
+| 003 | 105 | 1 | No croutons |
+| 004 | 106 | 1 | None |
 
 ### Justificación
 
@@ -116,7 +124,8 @@ Se eliminaron las dependencias parciales:
 
 - La información del pedido se almacena una sola vez por pedido.
 - La información del producto se almacena una sola vez por producto.
-- Quantity, Special Request y Address dependen de la combinación
+- Address se almacena en Orders_2NF porque depende de Order ID.
+- Quantity y Special Request dependen de la combinación
   completa de Order ID e Item ID.
 
 Sin embargo, Orders_2NF todavía contiene una dependencia transitiva:
@@ -129,10 +138,9 @@ Por esta razón, es necesario aplicar la tercera forma normal.
 
 ## 5. Tercera forma normal (3FN)
 
-
 Se crea Customers para almacenar los datos propios de cada cliente.
 
-Orders conserva únicamente el identificador del cliente como clave foránea, además del identificador del pedido y su hora de entrega.
+Orders conserva el identificador del cliente como clave foránea, además del identificador del pedido, su dirección y su hora de entrega.
 
 Items y OrderDetails conservan la estructura obtenida en 2FN.
 
@@ -146,12 +154,12 @@ Items y OrderDetails conservan la estructura obtenida en 2FN.
 
 ### Tabla final Orders
 
-| Order ID (PK) | Customer ID (FK) | Delivery Time |
-|---|---|---|
-| 001 | C01 | 6:00 PM |
-| 002 | C02 | 7:30 PM |
-| 003 | C03 | 12:00 PM |
-| 004 | C03 | 5:00 PM |
+| Order ID (PK) | Customer ID (FK) | Address | Delivery Time |
+|---|---|---|---|
+| 001 | C01 | 123 Main St | 6:00 PM |
+| 002 | C02 | Por confirmar | 7:30 PM |
+| 003 | C03 | 789 Oak St | 12:00 PM |
+| 004 | C03 | 464 Georgia St | 5:00 PM |
 
 ### Tabla final Items
 
@@ -165,14 +173,14 @@ Items y OrderDetails conservan la estructura obtenida en 2FN.
 
 ### Tabla final OrderDetails
 
-| Order ID (PK, FK) | Item ID (PK, FK) | Quantity | Special Request | Address |
-|---|---|---|---|---|
-| 001 | 101 | 2 | No onions | 123 Main St |
-| 001 | 102 | 1 | Extra ketchup | 123 Main St |
-| 002 | 103 | 1 | Extra cheese | 456 Elm St |
-| 002 | 102 | 2 | None | 4th Avenue |
-| 003 | 105 | 1 | No croutons | 789 Oak St |
-| 004 | 106 | 1 | None | 464 Georgia St |
+| Order ID (PK, FK) | Item ID (PK, FK) | Quantity | Special Request |
+|---|---|---|---|
+| 001 | 101 | 2 | No onions |
+| 001 | 102 | 1 | Extra ketchup |
+| 002 | 103 | 1 | Extra cheese |
+| 002 | 102 | 2 | None |
+| 003 | 105 | 1 | No croutons |
+| 004 | 106 | 1 | None |
 
 ### Justificación
 
@@ -180,13 +188,12 @@ Se eliminó la dependencia transitiva de los datos del cliente:
 
 - Customer Name y Customer Phone dependen de Customer ID
   en Customers.
-- Customer ID y Delivery Time dependen de Order ID en Orders.
+- Customer ID, Address y Delivery Time dependen de Order ID en Orders.
 - Item Name y Price dependen de Item ID en Items.
-- Quantity, Special Request y Address dependen de la clave
+- Quantity y Special Request dependen de la clave
   compuesta de OrderDetails.
 
-Bajo los supuestos establecidos, las tablas cumplen la tercera
-forma normal.
+Bajo los supuestos establecidos, las tablas cumplen la tercera forma normal.
 
 ## 6. Claves y relaciones
 
@@ -213,5 +220,4 @@ forma normal.
 | Orders → OrderDetails | 1:N | Un pedido puede tener varios detalles. |
 | Items → OrderDetails | 1:N | Un producto puede aparecer en varios detalles de pedidos. |
 
-Orders e Items tienen una relación muchos a muchos (N:N),
-resuelta mediante la tabla intermedia OrderDetails.
+Orders e Items tienen una relación muchos a muchos (N:N), resuelta mediante la tabla intermedia OrderDetails.
